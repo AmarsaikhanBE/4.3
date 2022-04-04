@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4.3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: grid;
+            place-content: center;
+            height: 100vh;
+        }
+        
+        .import,
+        .run-time {
+            background-color: aqua;
+            padding: 2rem;
+            border-radius: .5rem;
+        }
+        
+        .run-time {
+            display: grid;
+            grid-template-columns: repeat(3, 3rem);
+            gap: .5rem;
+        }
+        
+        .run-time div {
+            background-color: black;
+            color: white;
+            text-align: center;
+            align-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="import">
+        <input type="number" id="inputSec">
+        <button id="run">Start</button>
+    </div>
+    <div class="run-time" style="display: none;">
+        <div id="hours">0</div>
+        <div id="minuts">0</div>
+        <div id="seconds">0</div>
+    </div>
+    <script>
+        run.addEventListener('click', () => {
+            let i = Number(inputSec.value)
+            let h = Math.floor(i / 3600)
+            let m = Math.floor((i - h * 3600) / 60)
+            let s = i - h * 3600 - m * 60
+            hours.textContent = h
+            minuts.textContent = m
+            seconds.textContent = s
+            let clock = null
+            const timeRuning = () => {
+                if (s == -1) {
+                    s = 59
+                    seconds.textContent = s
+                    m--
+                    minuts.textContent = m
+                } else {
+                    seconds.textContent = s
+                    s--
+                }
+                if (m == -1) {
+                    m = 59
+                    minuts.textContent = m
+                    h--
+                    hours.textContent = h
+                }
+                if (h == -1) {
+                    document.querySelector('.import').style.display = null
+                    document.querySelector('.run-time').style.display = 'none'
+                    clearInterval(clock)
+                }
+            }
+            if (inputSec.value != '') {
+                clock = setInterval(timeRuning, 1000)
+                setTimeout(function() {
+                    document.querySelector('.import').style.display = 'none'
+                    document.querySelector('.run-time').style.display = null
+                }, 500)
+                inputSec.value = ''
+            }
+        })
+    </script>
+</body>
+
+</html>
