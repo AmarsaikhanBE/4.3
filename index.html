@@ -47,48 +47,59 @@
         <button id="run">Start</button>
     </div>
     <div class="run-time" style="display: none;">
-        <div id="hours">0</div>
-        <div id="minuts">0</div>
-        <div id="seconds">0</div>
+        <div id="hours"></div>
+        <div id="minuts"></div>
+        <div id="seconds"></div>
     </div>
     <script>
-        run.addEventListener('click', () => {
-            let i = Number(inputSec.value)
-            let h = Math.floor(i / 3600)
-            let m = Math.floor((i - h * 3600) / 60)
-            let s = i - h * 3600 - m * 60
-            hours.textContent = h
-            minuts.textContent = m
-            seconds.textContent = s
-            let clock = null
-            const timeRuning = () => {
-                if (s == -1) {
-                    s = 59
-                    seconds.textContent = s
-                    m--
-                    minuts.textContent = m
-                } else {
-                    seconds.textContent = s
-                    s--
-                }
+        let i
+        let h
+        let m
+        let s
+        let clock = null
+        const printClock = () => {
+            if (s < 10)
+                seconds.textContent = '0' + s
+            else
+                seconds.textContent = s
+            if (m < 10)
+                minuts.textContent = '0' + m
+            else
+                minuts.textContent = m
+            if (h < 10)
+                hours.textContent = '0' + h
+            else
+                hours.textContent = h
+        }
+        const timeRuning = () => {
+            s--
+            if (s == -1) {
+                s = 59
+                m--
                 if (m == -1) {
                     m = 59
-                    minuts.textContent = m
                     h--
-                    hours.textContent = h
-                }
-                if (h == -1) {
-                    document.querySelector('.import').style.display = null
-                    document.querySelector('.run-time').style.display = 'none'
-                    clearInterval(clock)
-                }
-            }
+                    if (h == -1) {
+                        clearInterval(clock)
+                        document.querySelector('.import').style.display = null
+                        document.querySelector('.run-time').style.display = 'none'
+                    } else
+                        printClock()
+                } else
+                    printClock()
+            } else
+                printClock()
+        }
+        run.addEventListener('click', () => {
+            i = Number(inputSec.value)
+            h = Math.floor(i / 3600)
+            m = Math.floor((i - h * 3600) / 60)
+            s = i - h * 3600 - m * 60
             if (inputSec.value != '') {
+                document.querySelector('.import').style.display = 'none'
+                document.querySelector('.run-time').style.display = null
+                printClock()
                 clock = setInterval(timeRuning, 1000)
-                setTimeout(function() {
-                    document.querySelector('.import').style.display = 'none'
-                    document.querySelector('.run-time').style.display = null
-                }, 500)
                 inputSec.value = ''
             }
         })
