@@ -53,6 +53,21 @@
             height: 200px;
             overflow-y: scroll;
         }
+        
+        .btns {
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .btns button {
+            width: 4rem;
+            text-align: center;
+            background-color: black;
+            border: none;
+            border-radius: .4rem;
+            color: white;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -60,10 +75,10 @@
     <div class="container">
         <h1>Clock mechanism</h1>
         <div class="clock">
-            <div id="hours">00</div>
-            <div id="minuts">00</div>
-            <div id="seconds">00</div>
-            <div id="mseconds">00</div>
+            <div id="hours"></div>
+            <div id="minuts"></div>
+            <div id="seconds"></div>
+            <div id="mseconds"></div>
         </div>
         <div class="btns">
             <button>run</button><button>pause</button><button>lap</button><button>reset</button>
@@ -77,54 +92,53 @@
         let ms = 0
         let clock = null
         let lapNum = 0
+        const printClock = () => {
+            if (ms < 10)
+                mseconds.textContent = '0' + ms
+            else
+                mseconds.textContent = ms
+            if (s < 10)
+                seconds.textContent = '0' + s
+            else
+                seconds.textContent = s
+            if (m < 10)
+                minuts.textContent = '0' + m
+            else
+                minuts.textContent = m
+            if (h < 10)
+                hours.textContent = '0' + h
+            else
+                hours.textContent = h
+        }
         const timeRuning = () => {
+            ms++
             if (ms == 100) {
                 ms = 0
-                mseconds.textContent = '0' + ms
                 s++
-                if (s < 10)
-                    seconds.textContent = '0' + s
-                else
-                    seconds.textContent = s
-            } else {
-                if (ms < 10)
-                    mseconds.textContent = '0' + ms
-                else
-                    mseconds.textContent = ms
-                ms++
-            }
-            if (s == 60) {
-                s = 0
-                seconds.textContent = '0' + s
-                m++
-                if (m < 10)
-                    minuts.textContent = '0' + m
-                else
-                    minuts.textContent = m
-            }
-            if (m == 60) {
-                m = 0
-                minuts.textContent = '0' + m
-                h++
-                if (h < 10)
-                    hours.textContent = '0' + h
-                else
-                    hours.textContent = h
-            }
-            if (h == 24) {
-                h = 0
-                hours.textContent = '0' + h
-            }
+                if (s == 60) {
+                    s = 0
+                    m++
+                    if (m == 60) {
+                        m = 0
+                        h++
+                        printClock()
+                    } else
+                        printClock()
+                } else
+                    printClock()
+            } else
+                printClock()
         }
         const buttons = document.querySelectorAll('.btns button')
         const btnRem = () => {
             for (let i = 0; i < buttons.length; i++) {
-                buttons[i].style.display = 'none'
+                buttons[i].style.visibility = 'hidden'
             }
         }
         const btnShow = (x) => {
-            buttons[x].style.display = null
+            buttons[x].style.visibility = null
         }
+        printClock()
         btnRem()
         btnShow(0)
         document.addEventListener('click', (event) => {
@@ -138,7 +152,6 @@
                 clearInterval(clock)
                 btnRem()
                 btnShow(0)
-                btnShow(1)
                 btnShow(3)
             } else if (event.target == document.querySelector('.btns button:nth-child(3)')) {
                 lapNum++
@@ -151,10 +164,7 @@
                 s = 0
                 m = 0
                 h = 0
-                mseconds.textContent = '0' + ms
-                seconds.textContent = '0' + s
-                minuts.textContent = '0' + m
-                hours.textContent = '0' + h
+                printClock()
                 document.querySelector('.laps').innerHTML = null
                 btnRem()
                 btnShow(0)
